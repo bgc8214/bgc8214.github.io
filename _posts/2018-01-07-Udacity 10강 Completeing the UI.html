@@ -14,9 +14,9 @@ background: '/img/posts/01.jpg'
 <p>이 모든 것들은 뷰그룹이고 이는 여러가지를 혼합해서 사용할 수 있다는 것을 의미합니다. 하지만 너무 많이 중첩되면 성능에 영향이 있을 수 있습니다. 그래서 제공되는 것이 5. ConstraintLayout입니다. RelativeLayout처럼 자식 뷰들과 상대적으로 배치할 수 있도록 가능합니다. 하지만 제약 조건을 사용하여 다른 뷰에 상대적으로 배치하고 비율을 조정하는 방법을 나타냅니다. 이것은 중첩된 레이아웃 없어도 복잡한 레이아웃을 만들게 해줍니다. </p>
 <p>width/height도 match_parent나 wrap_content로 지정이 가능합니다. 그냥 볼때는 똑같아 보일 수 있으나 Gravity를 지정하거나 다른 뷰가 함께 있으면 그 모양이 달라지게 됩니다. </p>
 <img data-action="zoom" src='{{ "/img/posts/Udacity/gravity.JPG" | relative_url }}' alt='absolute'>
-<p>패딩(안쪽 여백)은 텍스트 뷰 안쪽에서 움직이는 것 처럼 동작하고 테두리를 넓힙니다. 마진(바깥 여백)은 뷰 전체의 주위에 바깥 여백을 더하는 식입니다.</p> 
+<p>패딩(안쪽 여백)은 텍스트 뷰 안쪽에서 움직이는 것 처럼 동작하고 테두리를 넓힙니다. 마진(바깥 여백)은 뷰 전체의 주위에 바깥 여백을 더하는 식입니다.</p>
 <img data-action="zoom" src='{{ "/img/posts/Udacity/padding.JPG" | relative_url }}' alt='absolute'>
-<p>모든 뷰에는 visibility 속성이 있다. invisible의 겨우에는 겉으로 나타나지는 않지만 자리를 차지하는 것을 확인 가능합니다. </p> 
+<p>모든 뷰에는 visibility 속성이 있다. invisible의 겨우에는 겉으로 나타나지는 않지만 자리를 차지하는 것을 확인 가능합니다. </p>
 <img data-action="zoom" src='{{ "/img/posts/Udacity/visible.JPG" | relative_url }}' alt='absolute'>
 
 <h2>Constraint Layout</h2>
@@ -25,3 +25,26 @@ background: '/img/posts/01.jpg'
 <p>ConstarintLayout은 디자인 모드에서 수직, 수평에 대한 제한을 직접 설정이 가능합니다. 다른 뷰 만들어서 이 제약에 붙이게 되면, 두 개의 뷰는 같이 움직에게 됩니다. 추가로 tools:text를 사용하게 되면 디자인 모드에서는 값이 보이지만 실제로 값이 보이지 않게되는 설정도 가능합니다.</p>
 
 
+<h2>Data Binding</h2>
+<p>UI와 실제 데이터의 연결을 findViewById를 사용하지 않고도 모든 뷰에서 가능하도록 하는 라이브러리입니다. build.gradle에서 dataBinding.enable = true로 하는 것이 시작입니다.
+그리고 데이터바인딩을 사용하기 위한 레이아웃을 Layout 태그를 루트로 감싸는 것이 필요합니다. 다음 ActivityMainBinding (레이아웃에 따라 이름은 달라짐) 객체를 만들고, DataBindingUtil의 setContentView 메소드로 뷰를 가져오게 됩니다.
+다음부터는 이 객체에 실제 데이터를 바인딩하면 되는 순서로 편리하게 사용가능합니다. </p>
+
+<h2>Accessibility & Internationalization</h2>
+<p>접근성이란 시작적이나 청력적인 한계가 있어도 앱을 사용할 수 있어야 된다는 것을 의미합니다. 국제화란 우리의 앱이 의도된 레이아웃 디자인에 영향을 주지 않 다른 언어로 번역이 되는 것을 의미합니다.</p>
+<p>안드로이드는 contentDescription 실제로 어떤 뷰가 표시되는지 설명 하는 속성을 제공하고 있습니다. 이 설명 텍스트는 화면의 어느 곳에도 표시되지 않지만 사용자가 음성 프롬프트를 제공하는 접근성 서비스를 사용하면 사용자가 해당 컨트롤로 이동하면 텍스트가 음성으로 전달됩니다 .
+<ImageView android:contentDescription="@string/origin_label"/>
+모든 응용 프로그램에서 이상적으로, contentDescription속성을 사용하여 모든 ImageView, ImageButton 및 모든 체크 상자를 설명하고 싶을 수 있으나 접근성 개발자 체크리스트를 잘 확인해야합니다.</p>
+<p>번역을 쉽게 하기 위한 방식으로 앱을 디자인 해야 합니다. 그렇게하기 위해 레이블과 제목 및 설명과 같이 번역 될 것으로 예상되는 텍스트는 모두 문자열 리소스로 정의해야합니다.res/values/strings.xml
+strings.xml 다른 언어로 다른 버전을 만들 수 있습니다. 이 작업은 여기에 ISO 639 코드 목록의 모든 언어의 약어가 될 수있는 values패턴이 value-xx있는 새 폴더를 만들면 수행됩니다. 예를 들어 기본 언어에서 모든 언어로 변환 된 strings.xml 파일의 프랑스어 버전이 포함됩니다. 프랑스는 xres/values-fr/strings.xml 로 해두면
+이런 방식으로 기본 언어로 프랑스어를 사용하도록 설정 한 사용자는 Android 버전에서 자동으로 프랑스어 버전의 문자열을로드하고 사전 번역 된 모든 프랑스어 라벨을 사용합니다. 번약할 의도가 없는 문자열은 <string name="timeFormat" translatable="false">hh:mm a</string>
+설정을 하면 됩니다.
+</p>
+<p>RTL (Right-to-Left) 스크립트 (아랍어 또는 히브리어)가 사용되는 국가에 배포하는 경우 가능한 한 RTL 레이아웃 및 텍스트 표시 및 편집에 대한 지원을 구현하는 것을 고려해야합니다. <vector android:autoMirrored="true"> </vector>
+으로 뒤집기가 가능합니다.
+</p>
+
+<h2>Responsive Design</h2>
+<p>ConstraintLayOut으로 가로모드로 변경하면, 제약이 설정된것 처럼 화면이 늘어나서 보이는 것을 확인할 수 있습니다. 하지만 공간이 낭비되어 보이기도 하기 때문에, 가로모드를 위한 xml을 따로 만들면 더 좋습니다. 이를 위해서 layout-land 라는 폴더를
+만들어서 안에 해당 레이아웃을 복사해서 넣으면 됩니다. 동일한 레이아웃이지만 가로모드에서 사용되는 레이아웃이 따로 생성이 됩니다. 여기서 둘이 공통으로 사용되는 부분을 따로 빼서 include 하는 방식으로 사용하게 된다면
+하나를 바꾸면 적용된 모든곳에 공통으로 변경되기 때문에 훨씬 편리하게 사용가능합니다.</p>
