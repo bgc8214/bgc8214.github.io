@@ -11,6 +11,35 @@ background: '/img/posts/01.jpg'
 <p>데이터를 가지고 있는 것은 다 Storage Services라고 구글에서는 부르고 있다. (아래 서비스 종류 이미지 첨부) 클라우드 스토리지는 공유폴더에 파일 저장하듯이 사용을 하게 된다. 파일 기반이다. 클라우드 SQL은 RDBMS이다. Cloud Spanner는 스케일이 더 글로벌 하다. Cloud Datastore는 Key Value로 쓰는 방식. 클라우드 빅테이블은 Hbase를 개선한 것이라 생각하면 된다. 빅쿼리는 데이터 웨어하우스로서 수많을 데이터를 쌓아두고 분석하는 것이다. </p>
 <h2>Cloud Storage</h2>
 <p>스토리지는 클래스가 나눠져 있다. Regional은 한 리전에만 위치할 경우이다. Multi-Rreginal은 여러 리전에 분산되어 있을 때이다. Nearline은 Coldline은 데이터를 백업 정도로만 사용하는 것이다(지속적으로 가져와서 사용하는 것은 많지 않음). Coldline이 백업보다 더 오래가져가는 데이터를 저장할 경우에 쓴다. Durability 는 데이터가 손상된는 거에 대한 정보이고, Availability는 서비스에 접근해서 데이터를 가져올 수 있는 것에 대한 정보이다. </p>
-<p>Bucket이라는 것이 존재하고 여기에 오브젝트를 넣는 형식이다. 정책은 bucket, object별로 설정이 된다. ACL은 GCP사용자 외에 어떤 사용자가 파일에 접근이 가능한지를 정하는 것이다. Signed URL은 버킷이나 오브젝트에 대한 키를 만들어서 주는 것이다. 형태가 URL로 나타나게 된다. Time-limit를 통해 얼마동안 유효한 키인지도 설정이 가능하다. Object에는 LifeCycle 이 있어 특정 시간이 지나면 Coldl 상태가 되는 등 정책이 있다. Object Chagne Notifiation은 Bucket에 파일이 올라가면 다른 외부 어플리케이션에 오브젝트의 변경을 알려준다.ㅊ/p>
+<p>Bucket이라는 것이 존재하고 여기에 오브젝트를 넣는 형식이다. 정책은 bucket, object별로 설정이 된다. ACL은 GCP사용자 외에 어떤 사용자가 파일에 접근이 가능한지를 정하는 것이다. Signed URL은 버킷이나 오브젝트에 대한 키를 만들어서 주는 것이다. 형태가 URL로 나타나게 된다. Time-limit를 통해 얼마동안 유효한 키인지도 설정이 가능하다. Object에는 LifeCycle 이 있어 특정 시간이 지나면 Coldl 상태가 되는 등 정책이 있다. Object Chagne Notifiation은 Bucket에 파일이 올라가면 다른 외부 어플리케이션에 오브젝트의 변경을 알려준다.</p>
 
-<p>\\</p>
+<h2>Cloud SQL</h2>
+<p>MySQL, PostgreSQL DB를 fully 매니징해주는 서비스이다. 백업이나 레플리카 등 서비스를 제공해준다. Compute Engine에서 Cloud SQL에 접근할 때는 Cloud SQL이 unsecured IP 여서 proxy를 설정하는 것을 가이드한다. 지금은 sercured IP도 제공이 되서 proxy를 사용하지 않아도 된다.</p>
+
+<h2>Cloud Spanner</h2>
+<p>보통 RDB보다 Availability가 높고, 레플리카도 알아서 해준다. 데이터 처리 용량에 대한 강점이 있다. </p>
+
+<h2>Cloud DataStore</h2>
+<p>처음 시작은 app engine에서 간단하게 DB로 사용하기 위한 용도였다. NoSql로 제공이 된다. Kind가 RDMS의 테이블이라 생각하면 되고, Entity가 하나의 row가 됩니다. Multi-Regional(높은 가용성)이나 Regional-locations(레이턴시가 낮음) 둘 다 구성이 가능합니다. </p>
+
+<h2>Cloud Bigtable</h2>
+<p>Fully managed NoSQL 인데, Hbase를 사용하여 만든 것이다. Streaming이나 batch를 돌릴 때, 큰 양을 빠르게 할 수 있다. Hbase는 관리를 해야하지만 이 제품을 쓰게되면 관리의 필요성이 없다. 데이터를 저장하고 있는 storage와 처리를 하는 processing(CPU)이 공간이 분리가 되어있습니다. </p>
+
+<h2>Resource Management</h2>
+<h2>Cloud Resource Management</h2>
+<p>리소스는 프로젝트 밑에 존재합니다. Global(Image..), Regional(External IPs), Zonal(Instance)이 될 수 있습니다. Project quotas	를 통해서 프로젝트 안에 정해진 양 이상을 사용할 수 없습니다. quotas는 해킹이나 유출에 따른 프로젝트의 안정성을 보장하기 위해서 사용됩니다.  </p>
+<p>Label은 리소스에 붙이는 값이고 filter resource라고 생각하면 됩니다. key value 형태로 내가 운영에 필요한대로 맞춰서 사용이 가능합니다. </p>
+<p>Billing은 프로젝트별로 얼마나 쓸지 budgets설정이 가능하다. 또한 어느비중만큼 썼을 때, 알람을 보내는 것도 가능합니다. </p>
+
+<h2>Resource Monitoring</h2>
+<h2>Stackdriver</h2>
+<p>GCP나 AWS 둘 다 모니터링이 가능하다. agents는 오픈소스를 사용해서 만들어져있다. fluentd를 로깅 agents로 사용한다. 여러 프로젝트를 Stackdriver로 확인하기 위해서 hosting project를 따로 만들어 하나에서 관리하게 만들 수 있다. </p>
+<p>Monitoring은 시스템, 플랫폼(gcp, aws) 등 다양한 메트릭에 대해서 모니터링이 가능하다. 대시보드나 알람기능도 모두 제공된다. collectd라는 agent를 설치해야 되는데, kubernetes를 제외하고는 built-in이 되어 있다. custom metrics은 자신이 원하는 값을 가져올 수 있게 한다. 하지만 코드를 직접 짜야한다. </p>
+<p>플랫폼, 시스템, 어플리케이션 로그를 쌓을 수 있다. 로그를 통한 메트릭을 볼 수 있다. 로그의 분석이나 검색에는 적절치 않다. 분석이나 검색을 위해서는 export를 하는 게 낫다</p>
+<p>에러 리포팅은 app engine만 되어 있다. 서비스에서 발생하는 에러를 보여주는 것이라 생각하면된다. Tracing은 http같은 것들의 레이턴시를 볼 때 사용한다. Debugging은 어플리케이션을 돌린 때, 문제가 생긴것을 보는 것이라 생각하면 된다. </p>
+
+<h2>Interconnecting Network</h2>
+<p>구글의 네트워크는 글로벌 스케일로 제공하게 된다. Cloud Virtual Private Networks(VPN) 온프레미스의 네트워크와 구글 클라우드의 네트워크간의 가상의 암호화된 통신 채널이 생기게 되는 것이다. Cloud Router는 BGP 라우팅 프로토콜을 지원한다. 서로간에 매뉴얼하게 IP를 직접 설정하지 않고, 라우팅 정보를 서로 받을 수 있게 된다. External Peering 은 구글과 다른 service provider(ex. kt )들과 직접 연결을 하는 것이다. 이를 통해 latency를 낮춘다.</p>
+
+<p>shared VPC는 호스트 프로젝트 내에 하나를 만들어 두고, 프로젝트 별로 subnet을 설정할 수 있다. Cloud DNS를 통해서 도메인을 만들어준다</p>
+
