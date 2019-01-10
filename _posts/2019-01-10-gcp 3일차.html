@@ -1,0 +1,65 @@
+---
+layout: post
+title:  "GCP 교육 3일차"
+date:   2019-01-10 16:00:00 -0400
+subtitle: "Load balancing / "
+categories : GCP
+background: '/img/posts/03.jpg'
+---
+
+<h2>Load Balancing</h2>
+<p>웹 서버가 클라이언트의 IP가 바로 보이느냐 안보이느냐 차이는 Proxy를 통해서 오는 것인지에 대한 차이이다. (Regional은 proxy가 없음) Global 로드 밸런서를 설정을 하면 전 세계의 모든 곳에 로드밸런싱이 가능하게 됩니다.
+미국과 유럽에 모두 인스턴스가 있다고해서 둘 다 로드밸런서를 둘 필요가 없고, 하나만 두면 알아서 가까운 위치에 로드밸런싱이 되게 됩니다.  </p>
+
+<h2>managed Instance group</h2>
+<p>하나의 템플릿을 통해서 계속해서 동일한 구성으로 서버를 만들 수 있는데 이것이 Managed instance group이다. 오토스케일링을 하기 위해서 많이 사용이 됩니다.
+  health check라는 기능을 통해서 몇 대가 떠있어야 하는지를 지정하고 그 상태가 에러가 있으면 새롭게 띄울 수 있게 된다. Connection Draining은 바로 인스턴스를 없애는 게 아니라, 연결된
+세션들이 끝날때까지 기다렸다가 삭제하게 되는 것이다. 새로 추가되는 연결은 받지 않고, 최대 3600초까지 기다린다. Instance Group Updater는 템플릿을 두 개를 넣어놓고, 롤링 업데이트를 하게 되는 것이다.</p>
+
+<h2>HTTP(S) load balancing</h2>
+<p>HTTP(S)의 포트인 80,8080,443의 로드밸런싱을 해준다. Backend는 인스턴스 그룹이고, Backend service는 헬스체크나 세션 세팅 등으로 구성된다. 글로벌 로드밸런싱은 전세계의 데이터센터에
+동일한 설정을 부여하는 것이기 때문에 5분여의 시간이 소요된다. URL Map은 L7스위치 역할을 수행한다고 생각하면 된다. URL에 따라 어디로 보낼지를 설정하는 것이다.
+HTTPS 로드밸런서는 ssl설정이 추가된 암호화된 세션을 만들어 준다. SSL Certificates는 GCP에서 자동으로 만들어준다. Cross-Region Load Balancing은 여러 Region에 있는 것도 로드 밸런싱을 해주는 기능이다.
+하나의 글로벌 IP를 통해서 지원된다. </p>
+
+<h2>Network Load Balancing</h2>
+<p>L4 Level에서 로드밸런싱을 해주는 장치이다. Global에는 UDP를 지원하지 않는데, 여기에서는 UDP가 지원됩니다. non-proxy 로드밸런서이기 때문에 포워딩 룰에 따라 바로 연결이 됩니다.
+Internal Load Balancing은 사설 IP 끼리만 로드밸런싱을 하는 것이다. 내부 was 서버나 Database에 접근할 경우에 사용이 가능하다.</p>
+
+<h2>Autuscaling</h2>
+<p>평소에는 최소한의 노드로 서비스를 하다가, 요청이 늘어나면 오토스케일링을 통해 개수를 올리는 형식이 비용관리에 좋다. 정책은 average CPU utilization과 HTTP load balancing serving capacity
+를 확인한다. 해당 정책으로 autosclaer가 인스턴스들의 상태를 확인하고, 스케일 업이나 다운을 하게 된다.</p>
+
+<h2>Infrastructure Automation</h2>
+<p>동일한 인프라를 다른 곳에 다시 구축하는 것이 어렵기 때문에 자동화를 통해 쉽게 스케일 업도 하고, 변경도 할 수 있도록 도와준다. 사용되는 이미지의 경우 외부에서 가져올 수 있게 만들어져 있다.
+Metadata는 키,밸류 형태로 vm에 프라이빗하게 사용될 수 있다. metadata를 갖고 있는 서버가 있기 때문에, 해당 정보를 쿼리해서 가져올 수 있다.(curl, gcloud 명령어).
+startup shutdown scripts를 만들어서 부팅 시나 종료시에 해당 내용을 수행하도록 할 수 있다. </p>
+
+<h2>Infrastructure Automation with deployment manager</h2>
+<p>Deployment template 를 만들어서 사용을 하개 됩니다. .yaml 파일로 구성이 가능합니다. </p>
+
+<h2>Managed Service</h2>
+<p>Dataproc은 하둡클러스터를 관리서비스로 제공해주는 기능이다. 다른 클라우드 서비스와 integration이 가능하다.
+   Dataflow는 데이터 프로세싱 서비스(etl)이다. 데이터를 추출하고 원하는 형식으로 변경하고 적재하는 것이다.
+    BigQuery는 데이터 웨어하우스이다. 수 많은 데이터를 빠르게 처리 가능하다. Cloud Datalab은 jupyter Notebook을 제공하는 것이다. </p>
+
+    <h2>Application Infrastructure Service</h2>
+    <p>Cloud Pub/Sub은 메시지 큐 서비스입니다. 큐에 데이터를 넣어두면 유실 없이 데이터를 꺼내갈 수 있는 형태로 제공됩니다.
+    Cloud Endpoint는 API Gateway로 사용됩니다. Cloud Functions 은 이벤트를 통해서 구동되고 다시 꺼지는 형태의 서비스입니다(아마존의 람다).
+  Cloud Source Repository는 github같은 서비스를 제공하는 것이고, 외부 저장소와도 연동이 가능합니다.
+Cloud Machine Learning을 통해 다양한 모델도 제공합니다</p>
+
+
+<h2>Application Development Service</h2>
+<p>App engine은 paas로 서비스를 바로 올릴 수 있도록 제공됩니다. </p>
+
+  <h2>Container</h2>
+  <p>Iaas, PaaS가 공존하는 형태이고, cluster로 오토 스케일링을 합니다. 컨테이너는 인프라스트럭쳐와 os영역까지 고려를 할 필요가 없어진다.
+  머신에 대한 종속이 아니라, 어플리케이션만 집중하면 된다. 마찬가지로 벤더에 대한 종속성도 신경을 많이 쓰지 않아도 된다. 한번 만들면, 아무데서나 띄울 수 있게 된다.
+쿠버네티스는 오픈소스 프로젝트이다. 쿠버네티스 엔진은 쿠버네티스 서비스를 관리해주는 기능이다. Docker형태로 사용하며, 오토스케일링 (인스턴스의 개수를 늘리거나, pod을 늘린다)이 가능하다. VPN으로 내부
+통신도 가능하다. Cluster는 마스터노드에서 워커노드를 관리하게 되는 구조이다. Kublet Agnet를 통해서 마스터와 워커가 통신을 하게된다. Kubernetes master endpoint라는 형태로
+마스터 노드를 따로 빼서 관리해주는 형태이다. pods 안에는 컨테이너들이 올라가게 된다. pods 당 아이피를 하나 받게 된다. 내부 컨테이너는 해당 아이피를 공유한다. 요새는 사이드카 형태로 어플리케이션을
+모니터링 이나 감지하는 애가 들어간다. 데이터는 따로 스토리지를 구성해서 연결해야 한다. 정지하고 재기동하면 데이터가 다 날아가기 때문이다.
+쿠버네티스 엔진 라벨로 다른 컨테이너들과 연관관계도 갖게된다. 외부에서 pod에 접근을 하기위해서는 service라는 기능을 만들어야한다. Deployment를 통해서 pod를 만들 수 있다.
+원래 띄워자야하는 대수보다 적으면 알아서 인스턴스를 띄운다. Rolling Update 다른 pod에 새로운 버전을 놓고, 무중단으로 배포가 가능하게 하는 것이다. 멀티 존으로도 만들 수 있다.
+node pool은 쿠버네티스 안에 있는 인스턴스 그룹이다. </p>
